@@ -16,6 +16,7 @@ var play_outro = true
 var label
 var text_done = false
 var text_timeout_seconds = ProjectSettings.get_setting("escoria/application/text_timeout_seconds")
+var restore_bg_music_volume = false
 
 var speech_stream
 var speech_player
@@ -91,7 +92,8 @@ func finish():
 	set_process(false)
 	finished = true
 
-	if bg_music.is_playing():
+	if bg_music.is_playing() and restore_bg_music_volume:
+		restore_bg_music_volume = false
 		bg_music.volume_db += damp_db
 
 	if animation and play_outro:
@@ -241,6 +243,7 @@ func setup_speech(tid):
 	speech_player.volume_db = vm.settings.voice_volume * ProjectSettings.get_setting("escoria/application/max_voice_volume")
 
 	if bg_music.is_playing():
+		restore_bg_music_volume = true
 		bg_music.volume_db -= damp_db
 
 	speech_player.play()
